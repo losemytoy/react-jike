@@ -1,10 +1,19 @@
 import './index.scss'
-import { Card, Form, Input, Button } from 'antd'
+import {Card, Form, Input, Button, message} from 'antd'
 import logo from '@/assets/logo.png'
+import {useDispatch} from "react-redux";
+import {fetchLogin} from "@/store/modules/user";
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
-  const onFinish = (value) =>{
-    console.log(value)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const onFinish = async (value) =>{
+    await dispatch(fetchLogin(value))
+    //1.跳转首页
+    navigate('/')
+    //2.提示用户
+    message.success('登陆成功')
   }
   return (
     <div className="login">
@@ -17,7 +26,7 @@ const Login = () => {
             rules={[
               {
                 required: true,
-                message: '请输入手机号'
+                message: '请输入手机号'//13800000002
               },
               {
                 pattern: /^1[3-9]\d{9}$/,
@@ -32,7 +41,7 @@ const Login = () => {
             rules={[
               {
                 required: true,
-                message: '请输入验证码'
+                message: '请输入验证码'//246810
               }
             ]}>
             <Input size="large" placeholder="请输入验证码" />
