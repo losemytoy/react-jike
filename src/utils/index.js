@@ -1,5 +1,9 @@
 import {request} from "axios";
+import {setToken,getToken,removeToken} from "@/utils/token";
 
 export {
-  request
+  request,
+  setToken,
+  getToken,
+  removeToken
 }
