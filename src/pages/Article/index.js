@@ -4,6 +4,8 @@ import locale from "antd/es/time-picker/locale/zh_CN";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import img404 from '@/assets/error.png'
 import {useChannel} from "@/hooks/useChannel";
+import {useEffect, useState} from "react";
+import {getArticleListAPI} from "@/apis/article";
 
 const Article = () => {
 
@@ -74,6 +76,19 @@ const Article = () => {
     }
   ]
 
+  const [list, setList] = useState([])
+  const [count, setCount] = useState(0)
+
+
+  useEffect(() => {
+    async function getList() {
+      const res = await getArticleListAPI()
+      setList(res.data.results)
+      setCount(res.data.total_count)
+    }
+    getList()
+  }, []);
+
   return (
     <div>
       <Card title={
@@ -95,7 +110,7 @@ const Article = () => {
 
           <Form.Item label="频道" name="channel_id">
             <Select placeholder="请选择文章频道" style={{width: 120}}>
-              {channelList.map(item =><Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)}
+              {channelList.map(item => <Select.Option key={item.id} value={item.id}>{item.name}</Select.Option>)}
             </Select>
           </Form.Item>
 
@@ -111,8 +126,8 @@ const Article = () => {
         </Form>
       </Card>
 
-      <Card title={`根据筛选条件共查询到 count 条结果：`}>
-        <Table rowKey='id' columns={columns} dataSource={data}/>
+      <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
+        <Table rowKey='id' columns={columns} dataSource={list}/>
       </Card>
     </div>)
 }
