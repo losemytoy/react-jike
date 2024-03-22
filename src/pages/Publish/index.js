@@ -7,7 +7,7 @@ import {
   Input,
   Upload,
   Space,
-  Select
+  Select, message
 } from 'antd'
 import {PlusOutlined} from '@ant-design/icons'
 import {Link} from 'react-router-dom'
@@ -31,11 +31,12 @@ const Publish = () => {
   }, []);
 
   const onFinish = (formValue) => {
+    if (imageList.length !== imageType) return message.warning('封面类型和类型不匹配')
     const reqData = {
       ...formValue,
       cover: {
-        type: 0,
-        images: []
+        type: imageType,
+        images: imageList.map(item => item.response.data.url)
       }
     }
     createArticleAPI(reqData)
