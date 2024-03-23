@@ -51,11 +51,19 @@ const Publish = () => {
   const [form] = Form.useForm()
   useEffect(() => {
     async function getArticleDetail() {
-      return await getArticleById(articleId)
+      const res = await getArticleById(articleId)
+      const data = res.data
+      form.setFieldsValue({
+        ...data,
+        type: data.cover.type
+      })
+      setImageType(data.cover.type)
+      setImageList(data.cover.images.map(url => {
+        return {url}
+      }))
     }
-
-    getArticleDetail().then(r => form.setFieldsValue(r.data))
-  }, [articleId,form]);
+    getArticleDetail()
+  }, [articleId, form]);
 
   return (
     <div className="publish">
@@ -106,6 +114,7 @@ const Publish = () => {
               name='image'
               onChange={onChange}
               maxCount={imageType}
+              fileList={imageList}
             >
               <div style={{marginTop: 8}}>
                 <PlusOutlined/>
