@@ -1,11 +1,11 @@
-import {Breadcrumb, Button, Card, DatePicker, Form, Radio, Select, Tag, Space, Table} from "antd";
+import {Breadcrumb, Button, Card, DatePicker, Form, Radio, Select, Tag, Space, Table, Popconfirm} from "antd";
 import {Link} from "react-router-dom";
 import locale from "antd/es/time-picker/locale/zh_CN";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import img404 from '@/assets/error.png'
 import {useChannel} from "@/hooks/useChannel";
 import {useEffect, useState} from "react";
-import {getArticleListAPI} from "@/apis/article";
+import {deleteArticleAPI, getArticleListAPI} from "@/apis/article";
 
 const Article = () => {
 
@@ -57,7 +57,11 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type='primary' shape='circle' icon={<EditOutlined/>}/>
-            <Button type='primary' danger shape='circle' icon={<DeleteOutlined/>}/>
+            <Popconfirm title='删除文章'
+                        description="确认要删除？"
+                        onConfirm={() => onConfirm(data)}>
+              <Button type='primary' danger shape='circle' icon={<DeleteOutlined/>}/>
+            </Popconfirm>
           </Space>
         )
       }
@@ -94,10 +98,16 @@ const Article = () => {
     })
   }
 
-  const onPageChange = (page)=>{
+  const onPageChange = (page) => {
     setReqData({
       ...reqData,
       page: page
+    })
+  }
+  const onConfirm = async (value) => {
+    await deleteArticleAPI(value.id)
+    setReqData({
+      ...reqData
     })
   }
 
@@ -140,7 +150,7 @@ const Article = () => {
 
       <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
         <Table rowKey='id' columns={columns} dataSource={list} pagination={{
-          total:count,
+          total: count,
           pageSize: reqData.per_page,
           onChange: onPageChange
         }}/>
