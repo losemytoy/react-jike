@@ -1,5 +1,5 @@
 import {Breadcrumb, Button, Card, DatePicker, Form, Radio, Select, Tag, Space, Table, Popconfirm} from "antd";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import locale from "antd/es/time-picker/locale/zh_CN";
 import {DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import img404 from '@/assets/error.png'
@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import {deleteArticleAPI, getArticleListAPI} from "@/apis/article";
 
 const Article = () => {
+  const navigate = useNavigate()
 
   const {channelList} = useChannel()
 
@@ -56,7 +57,8 @@ const Article = () => {
       render: data => {
         return (
           <Space size="middle">
-            <Button type='primary' shape='circle' icon={<EditOutlined/>}/>
+            <Button type='primary' shape='circle' icon={<EditOutlined/>}
+                    onClick={() => navigate(`/publish?id=${data.id}`)}/>
             <Popconfirm title='删除文章'
                         description="确认要删除？"
                         onConfirm={() => onConfirm(data)}>
@@ -85,6 +87,7 @@ const Article = () => {
       setList(res.data.results)
       setCount(res.data.total_count)
     }
+
     getList()
   }, [reqData]);
 
