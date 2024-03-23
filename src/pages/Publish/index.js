@@ -62,7 +62,10 @@ const Publish = () => {
         return {url}
       }))
     }
-    getArticleDetail()
+
+    if (articleId) {
+      getArticleDetail()
+    }
   }, [articleId, form]);
 
   return (
@@ -71,7 +74,7 @@ const Publish = () => {
         title={
           <Breadcrumb items={[
             {title: <Link to={'/'}>首页</Link>},
-            {title: '发布文章'},
+            {title: `${articleId ? '编辑' : '发布'}文章`},
           ]}
           />
         }
