@@ -10,17 +10,18 @@ import {
   Select, message
 } from 'antd'
 import {PlusOutlined} from '@ant-design/icons'
-import {Link, useSearchParams} from 'react-router-dom'
+import {Link, useNavigate, useSearchParams} from 'react-router-dom'
 import './index.scss'
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css'
 import {useEffect, useState} from "react";
-import {createArticleAPI, getArticleById} from "@/apis/article";
+import {createArticleAPI, getArticleById, updateArticleAPI} from "@/apis/article";
 import {useChannel} from "@/hooks/useChannel";
 
 const {Option} = Select
 
 const Publish = () => {
+  const navigate = useNavigate()
   const {channelList} = useChannel()
 
   const onFinish = (formValue) => {
@@ -29,10 +30,24 @@ const Publish = () => {
       ...formValue,
       cover: {
         type: imageType,
-        images: imageList.map(item => item.response.data.url)
+        images: imageList.map(item => {
+          if (item.response) {
+            return item.response.data.url
+          } else {
+            return item.url
+          }
+        })
       }
     }
-    createArticleAPI(reqData)
+    if (articleId) {
+      updateArticleAPI({
+        ...reqData,
+        id: articleId
+      })
+      navigate('/article')
+    } else {
+      createArticleAPI(reqData)
+    }
   }
 
   //上传回调
