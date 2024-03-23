@@ -94,6 +94,13 @@ const Article = () => {
     })
   }
 
+  const onPageChange = (page)=>{
+    setReqData({
+      ...reqData,
+      page: page
+    })
+  }
+
   return (
     <div>
       <Card title={
@@ -132,7 +139,11 @@ const Article = () => {
       </Card>
 
       <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
-        <Table rowKey='id' columns={columns} dataSource={list}/>
+        <Table rowKey='id' columns={columns} dataSource={list} pagination={{
+          total:count,
+          pageSize: reqData.per_page,
+          onChange: onPageChange
+        }}/>
       </Card>
     </div>)
 }
